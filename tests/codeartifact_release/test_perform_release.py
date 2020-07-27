@@ -26,11 +26,6 @@ def test_version_type_incorrect():
         perform_release.version_type('1.0')
 
 
-def test_pad_version():
-    padded_version = perform_release.pad_version('1.0.0')
-    assert padded_version == '1.0.0.0'
-
-
 def test_version_compare_true_x():
     assert perform_release.version_compare('1.0.0', '2.0.0') is True
 

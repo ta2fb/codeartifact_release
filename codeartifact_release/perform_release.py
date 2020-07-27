@@ -6,8 +6,7 @@ import re
 import subprocess
 import sys
 
-# TODO: remove fourth version option
-version_pattern = re.compile(r'^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}(\.[0-9]{1,2})?$')
+version_pattern = re.compile(r'^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}$')
 domain = 'CODEARTIFACT_DOMAIN'
 domain_owner = 'CODEARTIFACT_DOMAIN_OWNER'
 repository = 'CODEARTIFACT_REPOSITORY'
@@ -31,18 +30,10 @@ def version_type(arg_value: str):
     return arg_value
 
 
-def pad_version(version: str):
-    version_split = version.split('.')
-    if len(version_split) == 4:
-        return version
-    else:
-        return f'{version}.0'
-
-
 def version_compare(old_version: str, new_version: str) -> bool:
     # TODO: make this more efficient
-    old_x, old_y, old_z, old_extra = list(map(int, pad_version(old_version).split('.')))
-    new_x, new_y, new_z, new_extra = list(map(int, pad_version(new_version).split('.')))
+    old_x, old_y, old_z = list(map(int, old_version.split('.')))
+    new_x, new_y, new_z = list(map(int, new_version.split('.')))
     if old_x < new_x:
         return True
     elif old_x > new_x:
@@ -58,12 +49,8 @@ def version_compare(old_version: str, new_version: str) -> bool:
             elif old_z > new_z:
                 return False
             else:
-                if old_extra < new_extra:
-                    return True
-                elif old_extra > new_extra:
-                    return False
-                else:
-                    return False
+                # this means old_version = new_version
+                return False
 
 
 def get_stdout_as_str(process) -> str:
