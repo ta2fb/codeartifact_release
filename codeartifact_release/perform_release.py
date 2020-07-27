@@ -32,26 +32,14 @@ def version_type(arg_value: str):
 
 
 def version_compare(old_version: str, new_version: str) -> bool:
-    # TODO: make this more efficient
-    old_x, old_y, old_z = list(map(int, old_version.split('.')))
-    new_x, new_y, new_z = list(map(int, new_version.split('.')))
-    if old_x < new_x:
-        return True
-    elif old_x > new_x:
-        return False
-    else:
-        if old_y < new_y:
+    v_old = list(map(int, old_version.split('.')))
+    v_new = list(map(int, new_version.split('.')))
+    for old, new in zip(v_old, v_new):
+        if new > old:
             return True
-        elif old_y > new_y:
+        elif new < old:
             return False
-        else:
-            if old_z < new_z:
-                return True
-            elif old_z > new_z:
-                return False
-            else:
-                # this means old_version = new_version
-                return False
+    return False
 
 
 def get_stdout_as_str(process) -> str:
