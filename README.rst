@@ -76,11 +76,17 @@ Run tests
 
     tox -e run_tests
 
-Releases
-########
+Cutting Releases with this Package
+##################################
 
-.. warning:: Make sure you have write permissions to the s3pypi bucket and/or the CodeArtifact repository before running this command!
+.. warning:: Make sure you have write permissions to the CodeArtifact repository before running this command!
 
 .. code-block:: bash
 
-    ./perform-release.sh x.y.z
+    # set the following environment variables:
+    #   CODEARTIFACT_DOMAIN_OWNER=123456789123
+    #   CODEARTIFACT_DOMAIN=test
+    #   CODEARTIFACT_REPOSITORY=pypi
+    perform_release --version x.y.z
+    # if you have a repo with multiple packages, you can specify the directories to loop through them
+    perform_release --version x.y.z --package_dirs package1,package2
