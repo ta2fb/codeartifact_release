@@ -87,6 +87,6 @@ Cutting Releases with this Package
     #   CODEARTIFACT_DOMAIN_OWNER=123456789123
     #   CODEARTIFACT_DOMAIN=test
     #   CODEARTIFACT_REPOSITORY=pypi
-    perform_release --version x.y.z
+    codeartifact-release --version x.y.z
     # if you have a repo with multiple packages, you can specify the directories to loop through them
-    perform_release --version x.y.z --package_dirs package1,package2
+    codeartifact-release --version x.y.z --package_dirs package1,package2
