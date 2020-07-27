@@ -11,6 +11,7 @@ domain = 'CODEARTIFACT_DOMAIN'
 domain_owner = 'CODEARTIFACT_DOMAIN_OWNER'
 repository = 'CODEARTIFACT_REPOSITORY'
 config_keys = [domain, domain_owner, repository]
+package_version_file = 'PACKAGE_VERSION'
 logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.INFO)
 
 
@@ -78,6 +79,12 @@ def upload_to_codeartifact(version: str):
     subprocess.call(['twine', 'upload', '-r', 'codeartifact', f'dist/*{version}-*.whl'])
 
 
+def update_package_version_file(root_dir: Path, version: str):
+    logging.info(f'Updating {package_version_file}')
+    with open(str((root_dir / package_version_file)), 'w') as f:
+        f.write(f'{version}\n')
+
+
 def main():
     config = get_config()
 
@@ -113,13 +120,16 @@ def main():
         for package_dir in package_dirs:
             logging.info(f'Running the tox release command for {package_dir}')
             chdir(root_dir / package_dir)
-            logging.debug(f'cwd: {getcwd()}')
             run_release_command()
             chdir(root_dir)
-            logging.debug(f'cwd: {getcwd()}')
     else:
         logging.info('Running the tox release command')
         run_release_command()
+
+    update_package_version_file(root_dir, args.version)
+    logging.info(f'Committing {package_version_file} update')
+    subprocess.call(['git', 'add', package_version_file])
+    subprocess.call(['git', 'commit', '-m', f'Release {args.version}'])
 
     logging.info(f'Tagging commit as {args.version}')
     subprocess.call(['git', 'tag', args.version])
@@ -134,11 +144,9 @@ def main():
         for package_dir in package_dirs:
             logging.info(f'Running the tox release command for {package_dir} to build {args.version}')
             chdir(root_dir / package_dir)
-            logging.debug(f'cwd: {getcwd()}')
             run_release_command()
             upload_to_codeartifact(args.version)
             chdir(root_dir)
-            logging.debug(f'cwd: {getcwd()}')
     else:
         logging.info(f'Running the tox release command to build {args.version}')
         run_release_command()
