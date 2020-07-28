@@ -65,7 +65,8 @@ def main():
     config = utils.get_config()
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--version', type=version_type, help='Version to release (format should be ##.##.##)')
+    parser.add_argument('--version', type=version_type, required=True,
+                        help='Version to release (format should be ##.##.##)')
     parser.add_argument('--package_dirs', type=str, help='(Optional) List package directories to loop over, '
                                                          'comma separated')
     args = parser.parse_args()
