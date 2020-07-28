@@ -1,19 +1,8 @@
 import argparse
-import os
+
 import pytest
 
 import codeartifact_release.perform_release as perform_release
-
-os.environ['CODEARTIFACT_DOMAIN'] = 'test'
-os.environ['CODEARTIFACT_DOMAIN_OWNER'] = '123456789123'
-os.environ['CODEARTIFACT_REPOSITORY'] = 'pypi'
-
-
-def test_get_config():
-    config = perform_release.get_config()
-    assert config['CODEARTIFACT_DOMAIN'] == 'test'
-    assert config['CODEARTIFACT_DOMAIN_OWNER'] == '123456789123'
-    assert config['CODEARTIFACT_REPOSITORY'] == 'pypi'
 
 
 def test_version_type_correct():

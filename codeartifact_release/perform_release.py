@@ -1,28 +1,16 @@
 import argparse
 import logging
-from os import chdir, environ, getcwd
-from pathlib import Path
 import re
 import subprocess
 import sys
+from os import chdir, getcwd
+from pathlib import Path
+
+from codeartifact_release import utils
 
 version_pattern = re.compile(r'^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}$')
-domain = 'CODEARTIFACT_DOMAIN'
-domain_owner = 'CODEARTIFACT_DOMAIN_OWNER'
-repository = 'CODEARTIFACT_REPOSITORY'
-config_keys = [domain, domain_owner, repository]
 package_version_file = 'PACKAGE_VERSION'
 logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.INFO)
-
-
-def get_config() -> dict:
-    config = {}
-    for config_key in config_keys:
-        if config_key in environ:
-            config[config_key] = environ.get(config_key)
-        else:
-            sys.exit(f'Environment variable {config_key} is not set, exiting')
-    return config
 
 
 def version_type(arg_value: str):
@@ -74,7 +62,7 @@ def update_package_version_file(root_dir: Path, version: str):
 
 
 def main():
-    config = get_config()
+    config = utils.get_config()
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--version', type=version_type, help='Version to release (format should be ##.##.##)')
@@ -124,9 +112,9 @@ def main():
 
     logging.info('Configuring twine for CodeArtifact and obtaining new credentials')
     subprocess.call(['aws', 'codeartifact', 'login', '--tool', 'twine',
-                     '--repository', config[repository],
-                     '--domain', config[domain],
-                     '--domain-owner', str(config[domain_owner])])
+                     '--repository', config[utils.REPOSITORY],
+                     '--domain', config[utils.DOMAIN],
+                     '--domain-owner', str(config[utils.DOMAIN_OWNER])])
 
     if package_dirs:
         for package_dir in package_dirs:
