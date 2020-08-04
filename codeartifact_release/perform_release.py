@@ -129,4 +129,7 @@ def main():
         run_release_command()
         upload_to_codeartifact(args.version)
 
+    logging.info('Preparing for next development iteration')
+    subprocess.call(['git', 'commit', '--allow-empty', '-m', 'prepare for the next development iteration'])
+
     logging.info('The release has been successfully completed - Be sure to push commits and tags to origin')
